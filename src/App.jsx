@@ -1,0 +1,586 @@
+import { useState, useRef, useEffect } from "react";
+
+import "./App.css";
+
+// ── Logo placeholder (sostituisci src con il path reale del logo) ──
+import logo from "./assets/DKE_Logo_sfondoTrasparente.png";
+import phh from "./assets/ele1.jpg";
+import phh2 from "./assets/ele2.jpg";
+import phc from "./assets/pannello.png";
+import ph1 from "./assets/machapoke1.jpeg";
+import ph2 from "./assets/machapoke2.jpeg";
+import ph3 from "./assets/machapoke3.jpeg";
+import ph21 from "./assets/brbergamo1.jpeg";
+import ph22 from "./assets/brbergamo2.jpeg";
+import ph23 from "./assets/brbergamo3.jpeg";
+import ph31 from "./assets/brparma1.jpeg";
+import ph32 from "./assets/brparma2.jpeg";
+import ph33 from "./assets/brparma3.jpeg";
+import ph41 from "./assets/romaantica.jpeg";
+import ph42 from "./assets/romaantica2.jpeg";
+import ph43 from "./assets/romaantica.jpeg";
+
+
+const SERVICES = [
+  {
+    icon: "⚡",
+    title: "Impianti Elettrici Civili",
+    desc: "Progettazione e realizzazione di impianti elettrici per abitazioni private, condomini e uffici, nel rispetto delle normative vigenti.",
+  },
+  {
+    icon: "🏭",
+    title: "Impianti Industriali",
+    desc: "Installazione e manutenzione di quadri elettrici, cablaggi e impianti di forza motrice per capannoni e aziende.",
+  },
+  {
+    icon: "🌱",
+    title: "Fotovoltaico & Rinnovabili",
+    desc: "Installazione di impianti fotovoltaici residenziali e commerciali, con sistemi di accumulo e ottimizzazione energetica.",
+  },
+  {
+    icon: "💡",
+    title: "Illuminazione LED",
+    desc: "Sostituzione e progettazione di impianti di illuminazione ad alta efficienza energetica per interni ed esterni.",
+  },
+  {
+    icon: "🔌",
+    title: "Domotica e impianti di sicurezza",
+    desc: "Realizzazione e aggiornamenti di impianti di domotica e sistemi di sicurezza",
+  },
+  {
+    icon: "🛡️",
+    title: "Manutenzione & Verifiche",
+    desc: "Interventi di manutenzione programmata, verifiche periodiche e certificazioni degli impianti elettrici.",
+  },
+];
+
+const INTERVENTI = [
+  "Impianto elettrico civile",
+  "Impianto industriale",
+  "Fotovoltaico",
+  "Illuminazione LED",
+  "Domotica",
+  "Sistemi di sicurezza",
+  "Manutenzione / Verifica",
+  "Altro",
+];
+
+const PROJECTS = [
+  {
+    id: 1,
+    title: "Impianto fotovoltaico 15 kW",
+    tag: "Fotovoltaico",
+    kw: "15 kW",
+    details: ["Cliente privato", "Batterie di accumulo", "Installazione completa"],
+    hero: true,
+    photos: [ph1, ph2, ph3],
+  },
+  {
+    id: 2,
+    title: "Rifacimento impianto elettrico",
+    tag: "Civile",
+    kw: null,
+    details: ["Appartamento 120 mq", "Quadro elettrico nuovo", "Certificazione CEI"],
+    hero: false,
+    photos: [ph21, ph22, ph23],
+  },
+  {
+    id: 3,
+    title: "Sistema domotizzato",
+    tag: "Domotica",
+    kw: null,
+    details: ["Efficenza energetica e risparmio", "Interoperabilità e integrazione", "Gestione remota"],
+    hero: false,
+    photos: [ph31, ph32, ph33],
+  },
+  {
+    id: 4,
+    title: "Illuminazione LED capannone",
+    tag: "Industriale",
+    kw: null,
+    details: ["2.000 mq", "Risparmio energetico 60%", "Sensori presenza"],
+    hero: false,
+    photos: [ph41, ph42, ph43],
+  },
+];
+
+// ── Carosello foto progetto ──
+// Ogni progetto ha un array `photos`: usa `null` come placeholder finché non
+// si dispone della foto reale, oppure passa il path dell'immagine importata.
+function ProjectGallery({ photos = [] }) {
+  const slides = photos.length ? photos : [null];
+  const [index, setIndex] = useState(0);
+
+  const prev = () => setIndex((i) => (i - 1 + slides.length) % slides.length);
+  const next = () => setIndex((i) => (i + 1) % slides.length);
+
+  return (
+    <div className="project-gallery">
+      <div
+        className="project-gallery__track"
+        style={{ transform: `translateX(-${index * 100}%)` }}
+      >
+        {slides.map((src, i) => (
+          <div className="project-gallery__slide" key={i}>
+            {src ? (
+              <img src={src} alt={`Foto progetto ${i + 1}`} />
+            ) : (
+              <div className="project-placeholder">
+                <span>📷</span>
+                <p>Foto progetto {i + 1}</p>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {slides.length > 1 && (
+        <>
+          <button
+            type="button"
+            className="project-gallery__nav project-gallery__nav--prev"
+            onClick={prev}
+            aria-label="Foto precedente"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            className="project-gallery__nav project-gallery__nav--next"
+            onClick={next}
+            aria-label="Foto successiva"
+          >
+            ›
+          </button>
+          <div className="project-gallery__dots">
+            {slides.map((_, i) => (
+              <button
+                type="button"
+                key={i}
+                className={`project-gallery__dot ${i === index ? "project-gallery__dot--active" : ""}`}
+                onClick={() => setIndex(i)}
+                aria-label={`Vai alla foto ${i + 1}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+export default function App() {
+  const formRef = useRef();
+  const [formData, setFormData] = useState({
+    nome: "",
+    telefono: "",
+    email: "",
+    intervento: "",
+    messaggio: "",
+    honeypot: "",
+  });
+  const [status, setStatus] = useState("idle"); // idle | sending | success | error
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (formData.honeypot) return;
+    if (!formData.nome || !formData.email || !formData.messaggio) return;
+
+    setStatus("sending");
+
+    emailjs
+      .send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          from_name: formData.nome,
+          from_email: formData.email,
+          phone: formData.telefono,
+          intervento: formData.intervento,
+          message: formData.messaggio,
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      )
+      .then(() => {
+        setStatus("success");
+        setFormData({ nome: "", telefono: "", email: "", intervento: "", messaggio: "", honeypot: "" });
+      })
+      .catch(() => setStatus("error"));
+  };
+
+  const scrollTo = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    setMenuOpen(false);
+  };
+
+  return (
+    <div className="site">
+      {/* ── NAVBAR ── */}
+      <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
+        <div className="navbar__inner">
+          <img src={logo} alt="DKE Impianti Srl" className="navbar__logo" />
+          <button
+            className="navbar__burger"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Menu"
+          >
+            <span /><span /><span />
+          </button>
+          <ul className={`navbar__links ${menuOpen ? "navbar__links--open" : ""}`}>
+            <li><button onClick={() => scrollTo("servizi")}>Servizi</button></li>
+            <li><button onClick={() => scrollTo("chi-siamo")}>Chi siamo</button></li>
+            <li><button onClick={() => scrollTo("progetti")}>Progetti</button></li>
+            <li><button onClick={() => scrollTo("contatti")} className="nav-cta">Preventivo</button></li>
+          </ul>
+        </div>
+      </nav>
+
+      {/* ── HERO ── */}
+      <section className="hero">
+        <div className="hero__inner container">
+
+          {/* LEFT */}
+          <div className="hero__content">
+            <p className="hero__eyebrow">Competenza · Passione · Professionalità  </p>
+            <h1 className="hero__title">
+              Progettiamo impianti.<br />
+              <span className="hero__title--accent">Installiamo sicurezza.</span>
+            </h1>
+            <p className="hero__sub">
+              DKE Impianti Srl realizza impianti elettrici civili, industriali, fotovoltaico,
+              domotica e sistemi di sicurezza. Professionalità certificata, lavoro a regola d'arte.
+            </p>
+            <div className="hero__actions">
+              <button className="btn btn--primary" onClick={() => scrollTo("contatti")}>
+                Richiedi un preventivo
+              </button>
+              <button className="btn btn--ghost" onClick={() => scrollTo("servizi")}>
+                Scopri i servizi
+              </button>
+            </div>
+          </div>
+
+          {/* RIGHT */}
+          <div className="hero__visual">
+            {/* Main photo */}
+            <div className="hero__photo-main">
+              <img src={phh} alt="DKE Impianti" className="hero__img" />
+              {/* Floating card top-right */}
+              <div className="hero__card hero__card--light">
+                <span className="hero__card-icon">🏠</span>
+                <div>
+                  <strong>Soluzioni su misura</strong>
+                  <p>Progettiamo impianti efficienti e sicuri, adattati ad ogni esigenza.</p>
+                </div>
+              </div>
+              {/* Floating card mid-right */}
+              <div className="hero__card hero__card--dark">
+                <span className="hero__card-icon">⭐</span>
+                <div>
+                  <strong>Qualità garantita</strong>
+                  <p>Materiali certificati e installazioni a regola d'arte, nel rispetto delle normative.</p>
+                </div>
+              </div>
+            </div>
+            {/* Second photo bottom-right */}
+            <div className="hero__photo-secondary">
+              <img src={phc} alt="Pannello elettrico DKE Impianti" className="hero__img hero__img--small" />
+            </div>
+          </div>
+
+        </div>
+
+        {/* Stats bar — full width */}
+        <div className="hero__stats-bar">
+          <div className="container hero__stats">
+            <div className="hero__stat">
+              <span className="hero__stat-icon">🛡️</span>
+              <div>
+                <strong>Lavori certificati</strong>
+                <span>Norme CEI 64-8</span>
+              </div>
+            </div>
+            <div className="hero__stat">
+              <span className="hero__stat-icon">🏅</span>
+              <div>
+                <strong>Oltre 10 anni</strong>
+                <span>di passione e esperienza</span>
+              </div>
+            </div>
+            <div className="hero__stat">
+              <span className="hero__stat-icon">👥</span>
+              <div>
+                <strong>500+ clienti</strong>
+                <span>soddisfatti</span>
+              </div>
+            </div>
+            <div className="hero__stat">
+              <span className="hero__stat-icon">📍</span>
+              <div>
+                <strong>Interventi in</strong>
+                <span>tutto il nord Italia</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SERVIZI ── */}
+      <section className="section servizi" id="servizi">
+        <div className="container">
+          <div className="section__header">
+            <span className="section__label">Cosa facciamo</span>
+            <h2 className="section__title">I nostri servizi</h2>
+            <p className="section__sub">
+              Dall'impianto di casa al capannone industriale, dalla ricarica EV al fotovoltaico:
+              un interlocutore unico per tutte le tue esigenze elettriche.
+            </p>
+          </div>
+          <div className="services-grid">
+            {SERVICES.map((s) => (
+              <div className="service-card" key={s.title}>
+                <span className="service-card__icon">{s.icon}</span>
+                <h3 className="service-card__title">{s.title}</h3>
+                <p className="service-card__desc">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CHI SIAMO ── */}
+      <section className="section chi-siamo" id="chi-siamo">
+        <div className="container chi-siamo__grid">
+          <div className="chi-siamo__text">
+            <span className="section__label">Chi siamo</span>
+            <h2 className="section__title">Esperienza e certificazioni al tuo servizio</h2>
+            <p>
+              DKE Impianti Srl nasce dalla passione per l'impiantistica elettrica e da oltre quindici anni
+              di esperienza sul campo. Operiamo su cantieri residenziali, commerciali e industriali con un
+              team qualificato e costantemente aggiornato sulle normative vigenti.
+            </p>
+            <p>
+              Ogni intervento è progettato su misura, seguito dalla fase di progettazione fino alla
+              consegna con certificazione dell'impianto. La soddisfazione del cliente è la nostra
+              misura di qualità.
+            </p>
+            <ul className="chi-siamo__list">
+              <li>✔ Certificazione SOA e qualifiche professionali</li>
+              <li>✔ Impianti conformi CEI 64-8</li>
+              <li>✔ Garanzia su tutti i lavori eseguiti</li>
+              <li>✔ Interventi in tutta la provincia</li>
+            </ul>
+          </div>
+          <div className="chi-siamo__visual">
+            <img src={phh2} alt="Team DKE Impianti al lavoro" className="chi-siamo__img" />
+          </div>
+        </div>
+      </section>
+
+      {/* ── PROGETTI ── */}
+      <section className="section progetti" id="progetti">
+        <div className="container">
+          <div className="section__header">
+            <span className="section__label">I nostri lavori</span>
+            <h2 className="section__title">Progetti realizzati</h2>
+            <p className="section__sub">
+              Alcuni esempi dei lavori completati: ogni progetto è unico e realizzato su misura per il cliente.
+            </p>
+          </div>
+
+          {/* Hero project */}
+          {PROJECTS.filter((p) => p.hero).map((p) => (
+            <div className="project-hero" key={p.id}>
+              <div className="project-hero__img">
+                <ProjectGallery photos={p.photos} />
+              </div>
+              <div className="project-hero__info">
+                <span className="project-tag">{p.tag}</span>
+                <h3 className="project-title">{p.title}</h3>
+                {p.kw && <p className="project-kw">{p.kw}</p>}
+                <ul className="project-details">
+                  {p.details.map((d) => <li key={d}>✔ {d}</li>)}
+                </ul>
+                <button className="btn btn--ghost" onClick={() => document.getElementById("contatti")?.scrollIntoView({ behavior: "smooth" })}>
+                  Richiedi un intervento simile
+                </button>
+              </div>
+            </div>
+          ))}
+
+          {/* Alternating projects */}
+          <div className="project-list">
+            {PROJECTS.filter((p) => !p.hero).map((p, i) => (
+              <div className={`project-row ${i % 2 === 1 ? "project-row--reverse" : ""}`} key={p.id}>
+                <div className="project-row__img">
+                  <ProjectGallery photos={p.photos} />
+                </div>
+                <div className="project-row__info">
+                  <span className="project-tag">{p.tag}</span>
+                  <h3 className="project-title">{p.title}</h3>
+                  {p.kw && <p className="project-kw">{p.kw}</p>}
+                  <ul className="project-details">
+                    {p.details.map((d) => <li key={d}>✔ {d}</li>)}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FORM PREVENTIVO ── */}
+      <section className="section contatti" id="contatti">
+        <div className="container">
+          <div className="section__header">
+            <span className="section__label">Contatti</span>
+            <h2 className="section__title">Richiedi un preventivo gratuito</h2>
+            <p className="section__sub">
+              Compila il modulo e ti ricontattiamo entro 24 ore lavorative.
+            </p>
+          </div>
+          <div className="contact-wrap">
+            <form ref={formRef} onSubmit={handleSubmit} className="contact-form" noValidate>
+              {/* Honeypot */}
+              <input
+                type="text"
+                name="honeypot"
+                value={formData.honeypot}
+                onChange={handleChange}
+                style={{ display: "none" }}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="nome">Nome e cognome *</label>
+                  <input
+                    id="nome"
+                    name="nome"
+                    type="text"
+                    placeholder="Mario Rossi"
+                    value={formData.nome}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="telefono">Telefono</label>
+                  <input
+                    id="telefono"
+                    name="telefono"
+                    type="tel"
+                    placeholder="+39 333 000 0000"
+                    value={formData.telefono}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="email">Email *</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="mario@email.it"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="intervento">Tipo di intervento</label>
+                  <select
+                    id="intervento"
+                    name="intervento"
+                    value={formData.intervento}
+                    onChange={handleChange}
+                  >
+                    <option value="">Seleziona...</option>
+                    {INTERVENTI.map((i) => (
+                      <option key={i} value={i}>{i}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="form-group">
+                <label htmlFor="messaggio">Descrivi brevemente il lavoro *</label>
+                <textarea
+                  id="messaggio"
+                  name="messaggio"
+                  rows={5}
+                  placeholder="Es: ho bisogno di rifare l'impianto elettrico di un appartamento di 80mq..."
+                  value={formData.messaggio}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <p className="form-privacy">
+                Inviando questo modulo accetti il trattamento dei tuoi dati ai sensi del{" "}
+                <a href="#" target="_blank" rel="noopener noreferrer">Reg. UE 2016/679 (GDPR)</a>.
+              </p>
+              <button
+                type="submit"
+                className="btn btn--primary btn--full"
+                disabled={status === "sending"}
+              >
+                {status === "sending" ? "Invio in corso..." : "Invia richiesta"}
+              </button>
+              {status === "success" && (
+                <p className="form-feedback form-feedback--ok">
+                  ✅ Richiesta inviata! Ti ricontattiamo a breve.
+                </p>
+              )}
+              {status === "error" && (
+                <p className="form-feedback form-feedback--err">
+                  ❌ Errore nell'invio. Riprova o scrivici direttamente.
+                </p>
+              )}
+            </form>
+            <div className="contact-info">
+              <h3>Contatti diretti</h3>
+              <ul>
+                <li>📞 <a href="tel:+390000000000">+39 000 000 0000</a></li>
+                <li>✉️ <a href="mailto:info@dkeimpianti.it">info@dkeimpianti.it</a></li>
+                <li>📍 Via Example 00, Città (XX)</li>
+              </ul>
+              <div className="contact-hours">
+                <h4>Orari</h4>
+                <p>Lun – Ven: 8:00 – 18:00</p>
+                <p>Sab: 8:00 – 12:00</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FOOTER ── */}
+      <footer className="footer">
+        <div className="container footer__inner">
+          <img src={logo} alt="DKE Impianti Srl" className="footer__logo" />
+          <p className="footer__copy">
+            © {new Date().getFullYear()} DKE Impianti Srl — P.IVA 00000000000
+          </p>
+          <nav className="footer__nav">
+            <button onClick={() => scrollTo("servizi")}>Servizi</button>
+            <button onClick={() => scrollTo("chi-siamo")}>Chi siamo</button>
+            <button onClick={() => scrollTo("contatti")}>Contatti</button>
+          </nav>
+        </div>
+      </footer>
+    </div>
+  );
+}
