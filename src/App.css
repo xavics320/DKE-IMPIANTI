@@ -989,7 +989,9 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
     padding: 10px 0;
   }
   .navbar__logo {
-    height: 36px !important; /* override scroll transition */
+    height: 70px !important; /* override scroll transition */
+    padding: 0 10px;
+    margin-bottom: -15px;
   }
   .navbar__burger {
     display: flex;
