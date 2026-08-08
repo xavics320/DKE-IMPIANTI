@@ -52,16 +52,18 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  padding: 16px 0;
-  transition: background var(--transition), box-shadow var(--transition);
+  padding: 10px 0;
+  transition: background var(--transition), box-shadow var(--transition), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar--scrolled {
   background: var(--white);
   box-shadow: 0 1px 12px rgba(27, 63, 122, 0.10);
+  padding: 4px 0;
 }
 
 .navbar__inner {
+  position: relative;
   max-width: 1250px;
   margin: 0 auto;
   padding: 0 24px;
@@ -70,14 +72,36 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
   justify-content: space-between;
 }
 
-.navbar__logo {
-  height: 190px;
+.navbar__brand {
+  display: flex;
+  align-items: center;
+  z-index: 2;
+}
+
+.navbar__logo-icon {
+  height: 120px;
   width: auto;
   transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.navbar--scrolled .navbar__logo {
-  height: 95px;
+.navbar--scrolled .navbar__logo-icon {
+  height: 90px;
+}
+
+.navbar__logo-text {
+  height: 38px;
+  width: auto;
+  position: absolute;
+  top: 50%;
+  left: 208px;
+  transform: translateY(-50%);
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1), height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navbar--scrolled .navbar__logo-text {
+  height: 24px;
+  left: 30%;
+  transform: translate(-50%, -50%);
 }
 
 .navbar__links {
@@ -131,7 +155,7 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
 /* ── Hero ── */
 .hero {
   background: var(--white);
-  padding-top: 105px;
+  padding-top: 55px;
 }
 
 .hero__inner {
@@ -196,12 +220,12 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
 /* Stats bar */
 .hero__stats-bar {
   display: flex;
-  margin-top: 35px;
+  margin-top: -25px;
   border-radius: 12px;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   background: var(--bg);
-  padding: 24px 0;
+  padding: 20px 0;
 }
 
 .hero__stats {
@@ -980,18 +1004,21 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
   }
 }
 
-@media (max-width: 680px) {
-  
-  /* Navbar mobile */
-  .navbar {
-    background: var(--white);
-    box-shadow: 0 1px 8px rgba(27, 63, 122, 0.08);
-    padding: 10px 0;
-  }
-  .navbar__logo {
-    height: 70px !important; /* override scroll transition */
+/* Navbar tablet — switch to burger menu before the desktop nav links
+   and the absolutely-centered wordmark start colliding for lack of room */
+@media (max-width: 1024px) {
+  .navbar__brand {
     padding: 0 10px;
-    margin-bottom: -15px;
+  }
+  .navbar__logo-icon {
+    height: 70px !important; /* override scroll transition */
+  }
+  .navbar__logo-text,
+  .navbar--scrolled .navbar__logo-text {
+    position: static !important;
+    transform: none !important;
+    height: 20px !important;
+    margin-left: 10px;
   }
   .navbar__burger {
     display: flex;
@@ -999,7 +1026,7 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
   .navbar__links {
     display: none;
     position: absolute;
-    top: 58px;
+    top: 100%;
     left: 0; right: 0;
     background: var(--white);
     flex-direction: column;
@@ -1014,7 +1041,25 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
     width: 100%;
     text-align: left;
   }
- 
+}
+
+@media (max-width: 680px) {
+
+  /* Navbar mobile */
+  .navbar {
+    background: var(--white);
+    box-shadow: 0 1px 8px rgba(27, 63, 122, 0.08);
+    padding: 10px 0;
+  }
+  .navbar__logo-icon {
+    height: 54px !important; /* override scroll transition */
+  }
+  .navbar__logo-text,
+  .navbar--scrolled .navbar__logo-text {
+    height: 16px !important;
+    margin-left: 8px;
+  }
+
   /* Hero mobile */
   .hero {
     padding-top: 58px; /* altezza navbar mobile */

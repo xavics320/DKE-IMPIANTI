@@ -4,6 +4,8 @@ import "./App.css";
 
 // ── Logo placeholder (sostituisci src con il path reale del logo) ──
 import logo from "./assets/DKE_Logo_sfondoTrasparente.png";
+import logoIcon from "./assets/dke-logo-icon.png";
+import logoText from "./assets/dke-logo-text.png";
 import phh from "./assets/ele1.jpg";
 import phh2 from "./assets/ele2.jpg";
 import phc from "./assets/pannello.png";
@@ -230,7 +232,10 @@ export default function App() {
       {/* ── NAVBAR ── */}
       <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
         <div className="navbar__inner">
-          <img src={logo} alt="DKE Impianti Srl" className="navbar__logo" />
+          <div className="navbar__brand">
+            <img src={logoIcon} alt="" className="navbar__logo-icon" />
+            <img src={logoText} alt="DKE Impianti Srl" className="navbar__logo-text" />
+          </div>
           <button
             className="navbar__burger"
             onClick={() => setMenuOpen(!menuOpen)}
