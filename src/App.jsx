@@ -177,10 +177,13 @@ export default function App() {
     nome: "",
     telefono: "",
     email: "",
+    localita: "",
     intervento: "",
     messaggio: "",
+    privacy: false,
     honeypot: "",
   });
+  const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -192,13 +195,34 @@ export default function App() {
   }, []);
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+    // Rimuove l'errore sul campo appena l'utente inizia a correggere
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Honeypot — se compilato è uno spam bot, ignora silenziosamente
     if (formData.honeypot) return;
-    if (!formData.nome || !formData.email || !formData.messaggio) return;
+
+    // Validazione campi obbligatori
+    const newErrors = {};
+    if (!formData.nome.trim())     newErrors.nome     = "Il nome è obbligatorio";
+    if (!formData.email.trim())    newErrors.email    = "L'email è obbligatoria";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+                                   newErrors.email    = "Inserisci un'email valida";
+    if (!formData.messaggio.trim()) newErrors.messaggio = "Descrivi brevemente il lavoro";
+    if (!formData.privacy)         newErrors.privacy  = "Devi accettare la privacy policy";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
     setStatus("sending");
 
@@ -207,17 +231,22 @@ export default function App() {
         import.meta.env.VITE_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         {
-          from_name: formData.nome,
+          from_name:  formData.nome,
           from_email: formData.email,
-          phone: formData.telefono,
+          phone:      formData.telefono,
+          localita:   formData.localita,
           intervento: formData.intervento,
-          message: formData.messaggio,
+          message:    formData.messaggio,
         },
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       )
       .then(() => {
         setStatus("success");
-        setFormData({ nome: "", telefono: "", email: "", intervento: "", messaggio: "", honeypot: "" });
+        setFormData({
+          nome: "", telefono: "", email: "", localita: "",
+          intervento: "", messaggio: "", privacy: false, honeypot: "",
+        });
+        setErrors({});
       })
       .catch(() => setStatus("error"));
   };
@@ -458,7 +487,8 @@ export default function App() {
           </div>
           <div className="contact-wrap">
             <form ref={formRef} onSubmit={handleSubmit} className="contact-form" noValidate>
-              {/* Honeypot */}
+
+              {/* Honeypot — nascosto, serve solo per bloccare i bot */}
               <input
                 type="text"
                 name="honeypot"
@@ -468,6 +498,8 @@ export default function App() {
                 tabIndex={-1}
                 autoComplete="off"
               />
+
+              {/* Riga 1: Nome + Telefono */}
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="nome">Nome e cognome *</label>
@@ -478,8 +510,10 @@ export default function App() {
                     placeholder="Mario Rossi"
                     value={formData.nome}
                     onChange={handleChange}
-                    required
+                    aria-invalid={!!errors.nome}
+                    aria-describedby={errors.nome ? "nome-error" : undefined}
                   />
+                  {errors.nome && <span className="form-error" id="nome-error" role="alert">{errors.nome}</span>}
                 </div>
                 <div className="form-group">
                   <label htmlFor="telefono">Telefono</label>
@@ -493,6 +527,8 @@ export default function App() {
                   />
                 </div>
               </div>
+
+              {/* Riga 2: Email + Località */}
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="email">Email *</label>
@@ -503,24 +539,41 @@ export default function App() {
                     placeholder="mario@email.it"
                     value={formData.email}
                     onChange={handleChange}
-                    required
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? "email-error" : undefined}
                   />
+                  {errors.email && <span className="form-error" id="email-error" role="alert">{errors.email}</span>}
                 </div>
                 <div className="form-group">
-                  <label htmlFor="intervento">Tipo di intervento</label>
-                  <select
-                    id="intervento"
-                    name="intervento"
-                    value={formData.intervento}
+                  <label htmlFor="localita">Località</label>
+                  <input
+                    id="localita"
+                    name="localita"
+                    type="text"
+                    placeholder="Es: Milano, Sesto San Giovanni..."
+                    value={formData.localita}
                     onChange={handleChange}
-                  >
-                    <option value="">Seleziona...</option>
-                    {INTERVENTI.map((i) => (
-                      <option key={i} value={i}>{i}</option>
-                    ))}
-                  </select>
+                  />
                 </div>
               </div>
+
+              {/* Riga 3: Tipo intervento */}
+              <div className="form-group">
+                <label htmlFor="intervento">Tipo di intervento</label>
+                <select
+                  id="intervento"
+                  name="intervento"
+                  value={formData.intervento}
+                  onChange={handleChange}
+                >
+                  <option value="">Seleziona...</option>
+                  {INTERVENTI.map((i) => (
+                    <option key={i} value={i}>{i}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Messaggio */}
               <div className="form-group">
                 <label htmlFor="messaggio">Descrivi brevemente il lavoro *</label>
                 <textarea
@@ -530,13 +583,35 @@ export default function App() {
                   placeholder="Es: ho bisogno di rifare l'impianto elettrico di un appartamento di 80mq..."
                   value={formData.messaggio}
                   onChange={handleChange}
-                  required
+                  aria-invalid={!!errors.messaggio}
+                  aria-describedby={errors.messaggio ? "messaggio-error" : undefined}
                 />
+                {errors.messaggio && <span className="form-error" id="messaggio-error" role="alert">{errors.messaggio}</span>}
               </div>
-              <p className="form-privacy">
-                Inviando questo modulo accetti il trattamento dei tuoi dati ai sensi del{" "}
-                <a href="#" target="_blank" rel="noopener noreferrer">Reg. UE 2016/679 (GDPR)</a>.
-              </p>
+
+              {/* Checkbox privacy GDPR */}
+              <div className="form-group form-group--checkbox">
+                <label className="form-checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="privacy"
+                    checked={formData.privacy}
+                    onChange={handleChange}
+                    aria-invalid={!!errors.privacy}
+                    aria-describedby={errors.privacy ? "privacy-error" : undefined}
+                  />
+                  <span>
+                    Ho letto e accetto la{" "}
+                    <a href="https://www.iubenda.com/privacy-policy/dkeimpianti" target="_blank" rel="noopener noreferrer">
+                      Privacy Policy
+                    </a>{" "}
+                    ai sensi del Reg. UE 2016/679 (GDPR) *
+                  </span>
+                </label>
+                {errors.privacy && <span className="form-error" id="privacy-error" role="alert">{errors.privacy}</span>}
+              </div>
+
+              {/* Submit */}
               <button
                 type="submit"
                 className="btn btn--primary btn--full"
@@ -544,23 +619,28 @@ export default function App() {
               >
                 {status === "sending" ? "Invio in corso..." : "Invia richiesta"}
               </button>
+
+              {/* Feedback */}
               {status === "success" && (
-                <p className="form-feedback form-feedback--ok">
-                  ✅ Richiesta inviata! Ti ricontattiamo a breve.
+                <p className="form-feedback form-feedback--ok" role="alert">
+                  ✅ Richiesta inviata! Ti ricontattiamo entro 24 ore lavorative.
                 </p>
               )}
               {status === "error" && (
-                <p className="form-feedback form-feedback--err">
-                  ❌ Errore nell'invio. Riprova o scrivici direttamente.
+                <p className="form-feedback form-feedback--err" role="alert">
+                  ❌ Errore nell'invio. Riprova o scrivici direttamente a{" "}
+                  <a href="mailto:info@dkeimpianti.it">info@dkeimpianti.it</a>
                 </p>
               )}
             </form>
+
+            {/* Sidebar contatti */}
             <div className="contact-info">
               <h3>Contatti diretti</h3>
               <ul>
-                <li>📞 <a href="tel:+390000000000">+39 000 000 0000</a></li>
+                <li>📞 <a href="tel:+393339168067">+39 333 916 8067</a></li>
                 <li>✉️ <a href="mailto:info@dkeimpianti.it">info@dkeimpianti.it</a></li>
-                <li>📍 Via Example 00, Città (XX)</li>
+                <li>📍 Via Giovanni Dalle Bande Nere 7, 20146 Milano</li>
               </ul>
               <div className="contact-hours">
                 <h4>Orari</h4>
