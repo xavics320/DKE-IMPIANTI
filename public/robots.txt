@@ -1,0 +1,7 @@
+# robots.txt — DKE Impianti Srl
+# https://www.dkeimpianti.it
+
+User-agent: *
+Allow: /
+
+Sitemap: https://www.dkeimpianti.it/sitemap.xml
