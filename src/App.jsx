@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-
+import emailjs from "@emailjs/browser";
 import "./App.css";
 
 // ── Logo placeholder (sostituisci src con il path reale del logo) ──
