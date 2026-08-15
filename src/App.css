@@ -963,7 +963,7 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
 /* ── Footer ── */
 .footer {
   background: var(--navy);
-  padding: 32px 0;
+  padding: 40px 0;
 }
 
 .footer__inner {
@@ -971,19 +971,33 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 24px;
+}
+
+.footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .footer__logo {
-  height: 75px;
+  height: 110px;
   width: auto;
   filter: brightness(0) invert(1);
-  opacity: 0.85;
+  opacity: 0.92;
 }
 
 .footer__copy {
   font-size: 13px;
   color: rgba(255,255,255,0.55);
+  max-width: 340px;
+}
+
+.footer__links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
 }
 
 .footer__nav {
@@ -1001,6 +1015,22 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
 
 .footer__nav button:hover {
   color: var(--white);
+}
+
+.footer__legal {
+  display: flex;
+  gap: 16px;
+}
+
+.footer__legal a {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  transition: color var(--transition);
+}
+
+.footer__legal a:hover {
+  color: var(--white);
+  text-decoration: none;
 }
 
 /* ── Responsive ── */
@@ -1148,5 +1178,12 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
   .footer__inner {
     flex-direction: column;
     text-align: center;
+  }
+  .footer__brand {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .footer__links {
+    align-items: center;
   }
 }

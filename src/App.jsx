@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import emailjs from "@emailjs/browser";
+
 import "./App.css";
 
 // ── Logo placeholder (sostituisci src con il path reale del logo) ──
@@ -248,10 +248,7 @@ export default function App() {
         });
         setErrors({});
       })
-      .catch((err) => {
-        console.error("EmailJS error:", err);
-        setStatus("error");
-      });
+      .catch(() => setStatus("error"));
   };
 
   const scrollTo = (id) => {
@@ -658,15 +655,24 @@ export default function App() {
       {/* ── FOOTER ── */}
       <footer className="footer">
         <div className="container footer__inner">
-          <img src={logo} alt="DKE Impianti Srl" className="footer__logo" />
-          <p className="footer__copy">
-            © {new Date().getFullYear()} DKE Impianti Srl — P.IVA 00000000000
-          </p>
-          <nav className="footer__nav">
-            <button onClick={() => scrollTo("servizi")}>Servizi</button>
-            <button onClick={() => scrollTo("chi-siamo")}>Chi siamo</button>
-            <button onClick={() => scrollTo("contatti")}>Contatti</button>
-          </nav>
+          <div className="footer__brand">
+            <img src={logo} alt="DKE Impianti Srl" className="footer__logo" />
+            <p className="footer__copy">
+              © {new Date().getFullYear()} DKE Impianti Srl
+              — Via Giovanni Dalle Bande Nere 7, 20146 Milano — P.IVA 13176380965
+            </p>
+          </div>
+          <div className="footer__links">
+            <nav className="footer__nav">
+              <button onClick={() => scrollTo("servizi")}>Servizi</button>
+              <button onClick={() => scrollTo("chi-siamo")}>Chi siamo</button>
+              <button onClick={() => scrollTo("contatti")}>Contatti</button>
+            </nav>
+            <div className="footer__legal">
+              <a href="https://www.iubenda.com/privacy-policy/75376521" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+              <a href="https://www.iubenda.com/privacy-policy/75376521/cookie-policy" target="_blank" rel="noopener noreferrer">Cookie Policy</a>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
