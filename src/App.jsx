@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-
+import emailjs from "@emailjs/browser";
 import "./App.css";
 
 // ── Logo placeholder (sostituisci src con il path reale del logo) ──
@@ -76,6 +76,7 @@ const PROJECTS = [
     details: ["Cliente privato", "Batterie di accumulo", "Installazione completa"],
     hero: true,
     photos: [ph1, ph2, ph3],
+    alt: "Impianto fotovoltaico da 15 kW realizzato da DKE Impianti",
   },
   {
     id: 2,
@@ -85,6 +86,7 @@ const PROJECTS = [
     details: ["Appartamento 120 mq", "Quadro elettrico nuovo", "Certificazione CEI"],
     hero: false,
     photos: [ph21, ph22, ph23],
+    alt: "Rifacimento impianto elettrico civile — DKE Impianti Milano",
   },
   {
     id: 3,
@@ -94,6 +96,7 @@ const PROJECTS = [
     details: ["Efficenza energetica e risparmio", "Interoperabilità e integrazione", "Gestione remota"],
     hero: false,
     photos: [ph31, ph32, ph33],
+    alt: "Sistema domotica e automazione realizzato da DKE Impianti",
   },
   {
     id: 4,
@@ -103,13 +106,14 @@ const PROJECTS = [
     details: ["2.000 mq", "Risparmio energetico 60%", "Sensori presenza"],
     hero: false,
     photos: [ph41, ph42, ph43],
+    alt: "Illuminazione LED industriale per capannone — DKE Impianti",
   },
 ];
 
 // ── Carosello foto progetto ──
 // Ogni progetto ha un array `photos`: usa `null` come placeholder finché non
 // si dispone della foto reale, oppure passa il path dell'immagine importata.
-function ProjectGallery({ photos = [] }) {
+function ProjectGallery({ photos = [], alt = "Progetto DKE Impianti" }) {
   const slides = photos.length ? photos : [null];
   const [index, setIndex] = useState(0);
 
@@ -125,7 +129,7 @@ function ProjectGallery({ photos = [] }) {
         {slides.map((src, i) => (
           <div className="project-gallery__slide" key={i}>
             {src ? (
-              <img src={src} alt={`Foto progetto ${i + 1}`} />
+              <img src={src} alt={`${alt} — foto ${i + 1}`} />
             ) : (
               <div className="project-placeholder">
                 <span>📷</span>
@@ -438,7 +442,7 @@ export default function App() {
           {PROJECTS.filter((p) => p.hero).map((p) => (
             <div className="project-hero" key={p.id}>
               <div className="project-hero__img">
-                <ProjectGallery photos={p.photos} />
+                <ProjectGallery photos={p.photos} alt={p.alt} />
               </div>
               <div className="project-hero__info">
                 <span className="project-tag">{p.tag}</span>
@@ -459,7 +463,7 @@ export default function App() {
             {PROJECTS.filter((p) => !p.hero).map((p, i) => (
               <div className={`project-row ${i % 2 === 1 ? "project-row--reverse" : ""}`} key={p.id}>
                 <div className="project-row__img">
-                  <ProjectGallery photos={p.photos} />
+                  <ProjectGallery photos={p.photos} alt={p.alt} />
                 </div>
                 <div className="project-row__info">
                   <span className="project-tag">{p.tag}</span>
