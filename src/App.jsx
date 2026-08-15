@@ -129,7 +129,7 @@ function ProjectGallery({ photos = [], alt = "Progetto DKE Impianti" }) {
         {slides.map((src, i) => (
           <div className="project-gallery__slide" key={i}>
             {src ? (
-              <img src={src} alt={`${alt} — foto ${i + 1}`} />
+              <img src={src} alt={`${alt} — foto ${i + 1}`} loading="lazy" />
             ) : (
               <div className="project-placeholder">
                 <span>📷</span>
@@ -314,7 +314,7 @@ export default function App() {
           <div className="hero__visual">
             {/* Main photo */}
             <div className="hero__photo-main">
-              <img src={phh} alt="DKE Impianti" className="hero__img" />
+              <img src={phh} alt="Tecnico DKE Impianti al lavoro su quadro elettrico" className="hero__img" fetchpriority="high" />
               {/* Floating card top-right */}
               <div className="hero__card hero__card--light">
                 <span className="hero__card-icon">🏠</span>
@@ -334,7 +334,7 @@ export default function App() {
             </div>
             {/* Second photo bottom-right */}
             <div className="hero__photo-secondary">
-              <img src={phc} alt="Pannello elettrico DKE Impianti" className="hero__img hero__img--small" />
+              <img src={phc} alt="Impianto fotovoltaico realizzato da DKE Impianti" className="hero__img hero__img--small" fetchpriority="high" />
             </div>
           </div>
 
@@ -422,7 +422,7 @@ export default function App() {
             </ul>
           </div>
           <div className="chi-siamo__visual">
-            <img src={phh2} alt="Team DKE Impianti al lavoro" className="chi-siamo__img" />
+            <img src={phh2} alt="Il team di DKE Impianti Srl durante un intervento" className="chi-siamo__img" loading="lazy" />
           </div>
         </div>
       </section>
