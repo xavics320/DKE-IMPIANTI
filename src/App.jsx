@@ -6,7 +6,7 @@ import "./App.css";
 import logo from "./assets/DKE_Logo_sfondoTrasparente.png";
 import logoIcon from "./assets/dke-logo-icon.png";
 import logoText from "./assets/dke-logo-text.png";
-import phh from "./assets/ele1.webp";
+import phh from "./assets/dke-pannellosolare.jpeg";
 import phh2 from "./assets/ele2.webp";
 import phc from "./assets/pannello.webp";
 import ph1 from "./assets/machapoke1.webp";
@@ -74,7 +74,6 @@ const PROJECTS = [
     tag: "Fotovoltaico",
     kw: "15 kW",
     details: ["Cliente privato", "Batterie di accumulo", "Installazione completa"],
-    hero: true,
     photos: [ph1, ph2, ph3],
     alt: "Impianto fotovoltaico da 15 kW realizzato da DKE Impianti",
   },
@@ -84,7 +83,6 @@ const PROJECTS = [
     tag: "Civile",
     kw: null,
     details: ["Appartamento 120 mq", "Quadro elettrico nuovo", "Certificazione CEI"],
-    hero: false,
     photos: [ph21, ph22, ph23],
     alt: "Rifacimento impianto elettrico civile — DKE Impianti Milano",
   },
@@ -94,7 +92,6 @@ const PROJECTS = [
     tag: "Domotica",
     kw: null,
     details: ["Efficenza energetica e risparmio", "Interoperabilità e integrazione", "Gestione remota"],
-    hero: false,
     photos: [ph31, ph32, ph33],
     alt: "Sistema domotica e automazione realizzato da DKE Impianti",
   },
@@ -104,7 +101,6 @@ const PROJECTS = [
     tag: "Industriale",
     kw: null,
     details: ["2.000 mq", "Risparmio energetico 60%", "Sensori presenza"],
-    hero: false,
     photos: [ph41, ph42, ph43],
     alt: "Illuminazione LED industriale per capannone — DKE Impianti",
   },
@@ -191,11 +187,17 @@ export default function App() {
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 2000); // Simula un caricamento di 2 secondi
+    return () => clearTimeout(timer);
   }, []);
 
   const handleChange = (e) => {
@@ -261,6 +263,14 @@ export default function App() {
   };
 
   return (
+    <>
+    {loading && (
+      <div className={`loader ${!loading ? "loader--hidden" : ""}`}>
+        <div className="loader__spinner" />
+        <img src={logoIcon} alt="DKE Impianti" className="loader__logo" />
+      </div>
+    )}
+
     <div className="site">
       {/* ── NAVBAR ── */}
       <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
@@ -331,10 +341,6 @@ export default function App() {
                   <p>Materiali certificati e installazioni a regola d'arte, nel rispetto delle normative.</p>
                 </div>
               </div>
-            </div>
-            {/* Second photo bottom-right */}
-            <div className="hero__photo-secondary">
-              <img src={phc} alt="Impianto fotovoltaico realizzato da DKE Impianti" className="hero__img hero__img--small" fetchpriority="high" />
             </div>
           </div>
 
@@ -438,9 +444,8 @@ export default function App() {
             </p>
           </div>
 
-          {/* Hero project */}
-          {PROJECTS.filter((p) => p.hero).map((p) => (
-            <div className="project-hero" key={p.id}>
+          {PROJECTS.map((p, i) => (
+            <div className={`project-hero ${i % 2 === 1 ? "project-hero--reverse" : ""}`} key={p.id}>
               <div className="project-hero__img">
                 <ProjectGallery photos={p.photos} alt={p.alt} />
               </div>
@@ -457,25 +462,6 @@ export default function App() {
               </div>
             </div>
           ))}
-
-          {/* Alternating projects */}
-          <div className="project-list">
-            {PROJECTS.filter((p) => !p.hero).map((p, i) => (
-              <div className={`project-row ${i % 2 === 1 ? "project-row--reverse" : ""}`} key={p.id}>
-                <div className="project-row__img">
-                  <ProjectGallery photos={p.photos} alt={p.alt} />
-                </div>
-                <div className="project-row__info">
-                  <span className="project-tag">{p.tag}</span>
-                  <h3 className="project-title">{p.title}</h3>
-                  {p.kw && <p className="project-kw">{p.kw}</p>}
-                  <ul className="project-details">
-                    {p.details.map((d) => <li key={d}>✔ {d}</li>)}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -678,7 +664,13 @@ export default function App() {
             </div>
           </div>
         </div>
+        <div className="container footer__credits">
+          <a href="http://xavierparedes-dev.it" target="_blank" rel="noopener noreferrer">
+            Design by Xavier Paredes
+          </a>
+        </div>
       </footer>
     </div>
+    </>
   );
 }

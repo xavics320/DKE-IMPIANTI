@@ -7,7 +7,7 @@
   --navy:   #1B3F7A;
   --blue:   #2A8FC4;
   --green:  #6BBF2A;
-  --bg:     #F5F7FA;
+  --bg:     #edf4f8;
   --white:  #FFFFFF;
   --text:   #1A1A2E;
   --text-soft: #5a6070;
@@ -36,6 +36,49 @@ a:hover { text-decoration: underline; }
 ul { list-style: none; }
 button { background: none; border: none; cursor: pointer; font-family: inherit; }
 
+/* ── Loader ── */
+.loader {
+  position: fixed;
+  inset: 0;
+  background: var(--blue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: loaderFadeOut 0.6s ease forwards;
+  animation-delay: 1.6s;
+}
+
+.loader--hidden {
+  display: none;
+}
+
+.loader__logo {
+  width: 80px;
+  filter: brightness(0) invert(1);
+  position: relative;
+  z-index: 1;
+}
+
+.loader__spinner {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes loaderFadeOut {
+  to { opacity: 0; pointer-events: none; }
+}
+
 /* ── Layout ── */
 .container {
   max-width: 1250px;
@@ -50,6 +93,8 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
 /* ── Navbar ── */
 .navbar {
   position: fixed;
+  background: var(--bg);
+  border-bottom: 1px solid var(--navy);
   top: 0; left: 0; right: 0;
   z-index: 100;
   padding: 10px 0;
@@ -57,8 +102,8 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
 }
 
 .navbar--scrolled {
-  background: var(--white);
-  box-shadow: 0 1px 12px rgba(27, 63, 122, 0.10);
+  background: var(--bg);
+  box-shadow: 0 1px 12px rgba(35, 92, 185, 0.1);
   padding: 4px 0;
 }
 
@@ -155,14 +200,20 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
 /* ── Hero ── */
 .hero {
   background: var(--white);
-  padding-top: 55px;
+  padding-top: 85px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 
 .hero__inner {
+  flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 48px;
   align-items: center;
+  align-content: center;
   padding-top: 65px;
   padding-bottom: 60px;
 }
@@ -271,18 +322,13 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
 
 /* Visual right column */
 .hero__visual {
-  display: grid;
-  grid-template-columns: 1fr 210px;
-  grid-template-rows: auto;
-  gap: 14px;
-  align-items: start;
+  display: flex;
 }
 
 .hero__photo-main {
   position: relative;
-  grid-column: 1;
-  grid-row: 1;
-  margin-top: 70px;
+  width: 100%;
+  margin-top: 40px;
 }
 
 .hero__img-placeholder {
@@ -325,27 +371,26 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
 /* Floating cards */
 .hero__card {
   position: absolute;
-  right: -205px;
-  margin-top: -15px;
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 16px;
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: flex-start;
-  width: 190px;
-  box-shadow: 0 4px 20px rgba(27,63,122,0.13);
+  width: 220px;
+  box-shadow: 0 8px 24px rgba(27,63,122,0.16);
 }
 
 .hero__card--light {
   background: var(--white);
   border: 1px solid var(--border);
-  top: 34px;
+  top: -24px;
+  right: -24px;
 }
 
 .hero__card--dark {
   background: var(--navy);
-  top: 56%;
-  transform: translateY(-20%);
+  bottom: -24px;
+  left: -24px;
 }
 
 .hero__card-icon {
@@ -369,24 +414,6 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
 .hero__card--light p { color: var(--text-soft); }
 .hero__card--dark strong { color: var(--white); }
 .hero__card--dark p { color: rgba(255,255,255,0.7); }
-
-/* Second photo */
-.hero__photo-secondary {
-  grid-column: 2;
-  grid-row: 1;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 365px;
-  margin-left: -10px;
-}
-
-.hero__caption {
-  font-size: 12px;
-  font-style: italic;
-  color: var(--text-soft);
-  line-height: 1.5;
-  padding-left: 4px;
-}
 
 /* ── Buttons ── */
 .btn {
@@ -922,42 +949,21 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
   padding: 40px 40px 40px 0;
 }
 
-/* Alternating rows */
-.project-list {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-}
-
-.project-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  align-items: center;
-}
-
-.project-row--reverse {
+.project-hero--reverse {
   direction: rtl;
 }
 
-.project-row--reverse > * {
+.project-hero--reverse > * {
   direction: ltr;
 }
 
-.project-row__img {
-  height: 280px;
-  border-radius: var(--radius);
-  overflow: hidden;
+.project-hero--reverse .project-hero__info {
+  padding: 40px 0 40px 40px;
 }
 
-.project-row__img .project-placeholder {
-  min-height: unset;
-  height: 100%;
-  border-radius: var(--radius);
-}
-
-.project-row__info {
-  padding: 8px 0;
+.project-hero--reverse .project-hero__img .project-placeholder {
+  border-right: none;
+  border-left: 2px dashed var(--border);
 }
 
 /* ── Footer ── */
@@ -1033,16 +1039,35 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
   text-decoration: none;
 }
 
+.footer__credits {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  text-align: center;
+}
+
+.footer__credits a {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  transition: color var(--transition);
+}
+
+.footer__credits a:hover {
+  color: var(--white);
+  text-decoration: none;
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
+  .hero {
+    min-height: auto;
+  }
   .hero__inner {
     grid-template-columns: 1fr;
+    gap: 24px;
   }
-  .hero__visual {
-    grid-template-columns: 1fr;
-  }
-  .hero__photo-secondary {
-    display: none;
+  .hero__photo-main {
+    margin-top: 0;
   }
   .hero__card {
     display: none;
@@ -1165,15 +1190,6 @@ button { background: none; border: none; cursor: pointer; font-family: inherit; 
   }
   .project-hero__info {
     padding: 24px;
-  }
-  .project-row {
-    grid-template-columns: 1fr;
-  }
-  .project-row--reverse {
-    direction: ltr;
-  }
-  .project-row__img {
-    height: 220px;
   }
   .footer__inner {
     flex-direction: column;
