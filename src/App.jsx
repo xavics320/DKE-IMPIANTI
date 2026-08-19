@@ -47,7 +47,7 @@ const SERVICES = [
   {
     icon: "🔌",
     title: "Domotica e impianti di sicurezza",
-    desc: "Realizzazione e aggiornamenti di impianti di domotica e sistemi di sicurezza",
+    desc: "Realizzazione e aggiornamenti di impianti di domotica e sistemi di sicurezza.",
   },
   {
     icon: "🛡️",
@@ -275,10 +275,12 @@ export default function App() {
       {/* ── NAVBAR ── */}
       <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
         <div className="navbar__inner">
+          <button onClick={() => scrollTo("hero")} className="navbar__logo-btn" aria-label="Torna alla home">
           <div className="navbar__brand">
             <img src={logoIcon} alt="" className="navbar__logo-icon" />
             <img src={logoText} alt="DKE Impianti Srl" className="navbar__logo-text" />
           </div>
+          </button>
           <button
             className="navbar__burger"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -296,7 +298,7 @@ export default function App() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="hero">
+      <section className="hero" id="hero">
         <div className="hero__inner container">
 
           {/* LEFT */}
@@ -388,7 +390,7 @@ export default function App() {
             <span className="section__label">Cosa facciamo</span>
             <h2 className="section__title">I nostri servizi</h2>
             <p className="section__sub">
-              Dall'impianto di casa al capannone industriale, dalla ricarica EV al fotovoltaico:
+              Dall'impianto di casa al capannone industriale, dalla domotica al fotovoltaico:
               un interlocutore unico per tutte le tue esigenze elettriche.
             </p>
           </div>
@@ -411,7 +413,7 @@ export default function App() {
             <span className="section__label">Chi siamo</span>
             <h2 className="section__title">Esperienza e certificazioni al tuo servizio</h2>
             <p>
-              DKE Impianti Srl nasce dalla passione per l'impiantistica elettrica e da oltre quindici anni
+              DKE Impianti Srl nasce dalla passione per l'impiantistica elettrica e da oltre dieci anni
               di esperienza sul campo. Operiamo su cantieri residenziali, commerciali e industriali con un
               team qualificato e costantemente aggiornato sulle normative vigenti.
             </p>
@@ -424,7 +426,7 @@ export default function App() {
               <li>✔ Certificazione SOA e qualifiche professionali</li>
               <li>✔ Impianti conformi CEI 64-8</li>
               <li>✔ Garanzia su tutti i lavori eseguiti</li>
-              <li>✔ Interventi in tutta la provincia</li>
+              <li>✔ Interventi in tutto il nord italia</li>
             </ul>
           </div>
           <div className="chi-siamo__visual">
@@ -646,7 +648,9 @@ export default function App() {
       <footer className="footer">
         <div className="container footer__inner">
           <div className="footer__brand">
+            <button onClick={() => scrollTo("hero")} className="navbar__logo-btn" aria-label="Torna alla home">
             <img src={logo} alt="DKE Impianti Srl" className="footer__logo" />
+            </button>
             <p className="footer__copy">
               © {new Date().getFullYear()} DKE Impianti Srl
               — Via Giovanni Dalle Bande Nere 7, 20146 Milano — P.IVA 13176380965
@@ -666,7 +670,7 @@ export default function App() {
         </div>
         <div className="container footer__credits">
           <a href="http://xavierparedes-dev.it" target="_blank" rel="noopener noreferrer">
-            Design by Xavier Paredes
+            Design by WebDev XP
           </a>
         </div>
       </footer>
