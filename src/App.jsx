@@ -6,21 +6,20 @@ import "./App.css";
 import logo from "./assets/DKE_Logo_sfondoTrasparente.png";
 import logoIcon from "./assets/dke-logo-icon.png";
 import logoText from "./assets/dke-logo-text.png";
-import phh from "./assets/dke-pannellosolare.jpeg";
-import phh2 from "./assets/ele2.webp";
-import phc from "./assets/pannello.webp";
-import ph1 from "./assets/machapoke1.webp";
-import ph2 from "./assets/machapoke2.webp";
-import ph3 from "./assets/machapoke3.webp";
-import ph21 from "./assets/brbergamo1.webp";
-import ph22 from "./assets/brbergamo2.webp";
-import ph23 from "./assets/brbergamo3.webp";
-import ph31 from "./assets/brparma1.webp";
-import ph32 from "./assets/brparma2.webp";
-import ph33 from "./assets/brparma3.webp";
-import ph41 from "./assets/romaantica.webp";
-import ph42 from "./assets/romaantica2.webp";
-import ph43 from "./assets/romaantica.webp";
+import phh from "./assets/dke-pannellosolare.webp";
+import phh2 from "./assets/tecnicodke.webp";
+import ph1 from "./assets/fotovoltaico.webp";
+import ph2 from "./assets/fotovoltaico2.webp";
+import ph3 from "./assets/fotovoltaico3.webp";
+import ph21 from "./assets/brparma3.webp";
+import ph22 from "./assets/brparma4.webp";
+import ph23 from "./assets/brparma6.webp";
+import ph31 from "./assets/domotica1.webp";
+import ph32 from "./assets/domotica2.webp";
+import ph33 from "./assets/domotica3.webp";
+import ph41 from "./assets/cappannone1.webp";
+import ph42 from "./assets/cappannone2.webp";
+import ph43 from "./assets/cappannone3.webp";
 
 
 const SERVICES = [
