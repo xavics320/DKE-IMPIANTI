@@ -3,9 +3,9 @@ import emailjs from "@emailjs/browser";
 import "./App.css";
 
 // ── Logo placeholder (sostituisci src con il path reale del logo) ──
-import logo from "./assets/DKE_Logo_sfondoTrasparente.png";
-import logoIcon from "./assets/dke-logo-icon.png";
-import logoText from "./assets/dke-logo-text.png";
+import logo from "./assets/DKE_Logo_sfondoTrasparente.webp";
+import logoIcon from "./assets/dke-logo-icon.webp";
+import logoText from "./assets/dke-logo-text.webp";
 import phh from "./assets/dke-pannellosolare.webp";
 import phh2 from "./assets/tecnicodke.webp";
 import ph1 from "./assets/fotovoltaico.webp";
@@ -20,7 +20,8 @@ import ph33 from "./assets/domotica3.webp";
 import ph41 from "./assets/cappannone1.webp";
 import ph42 from "./assets/cappannone2.webp";
 import ph43 from "./assets/cappannone3.webp";
-
+import teslaLogo from "./assets/tesla-certified.webp";
+import teslaImg from "./assets/tesla-sfondo.webp";
 
 const SERVICES = [
   {
@@ -404,6 +405,56 @@ export default function App() {
           </div>
         </div>
       </section>
+
+{/* ── TESLA CERTIFIED ── */}
+<section className="section tesla" id="tesla" style={{ backgroundImage: `url(${teslaImg})` }}>
+  <div className="container">
+    <div className="tesla__inner">
+      {/* Sinistra — badge e titolo */}
+      <div className="tesla__content">
+        <div className="tesla__badge">
+          <img src={teslaLogo} alt="Tesla Certified Installer" className="tesla__logo" />
+        </div>
+        <span className="section__label tesla__label">Certificazione ufficiale</span>
+        <h2 className="tesla__title">Installatori Certificati Tesla</h2>
+        <p className="tesla__sub">
+          DKE Impianti è installatore ufficiale certificato Tesla. 
+          Progettiamo e installiamo soluzioni complete per un'energia 
+          più pulita, indipendente e sostenibile.
+        </p>
+        <button className="btn btn--white" onClick={() => scrollTo("contatti")}>
+          Richiedi un sopralluogo gratuito
+        </button>
+      </div>
+
+      {/* Destra — tre servizi */}
+      <div className="tesla__services">
+        <div className="tesla__service">
+          <span className="tesla__service-icon">☀️</span>
+          <div>
+            <h3>Impianti Fotovoltaici</h3>
+            <p>Produci la tua energia da fonti rinnovabili.</p>
+          </div>
+        </div>
+        <div className="tesla__service">
+          <span className="tesla__service-icon">🔋</span>
+          <div>
+            <h3>Sistemi di Accumulo Tesla Powerwall</h3>
+            <p>Energia sempre disponibile, anche quando non ne hai più bisogno.</p>
+          </div>
+        </div>
+        <div className="tesla__service">
+          <span className="tesla__service-icon">🏠</span>
+          <div>
+            <h3>Soluzioni Integrate</h3>
+            <p>Maggiore autonomia, risparmio e controllo sui consumi.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
       {/* ── CHI SIAMO ── */}
       <section className="section chi-siamo" id="chi-siamo">
